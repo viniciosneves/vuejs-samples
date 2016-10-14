@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+</head>
+<body>
+
+    <div id="app" class="container">
+
+        <counter heading="Likes"></counter>
+        <counter heading="Deslikes"></counter>
+
+    </div>
+
+    <template id="counter-template">
+        
+        <div>
+            <h1>{{ heading }}</h1>
+            <button @click="incrmentCount" class="btn btn-primary">Click - {{count}}</button>            
+        </div>
+
+    </template>
+
+    <script src="https://unpkg.com/vue@2.0.1/dist/vue.js"></script>
+
+    <script>
+
+        Vue.component('counter', {
+
+            template: '#counter-template',
+
+            data: function() {
+
+                return {count: 0}
+
+            },
+
+            props: ['heading'],
+
+            methods: {
+
+                incrmentCount: function () {
+                    
+                    this.count += 1;
+
+                }
+
+            }
+
+        });
+
+        new Vue({
+            
+            el: '#app'
+
+
+        });
+        
+    </script>
+
+</body>
+</html>

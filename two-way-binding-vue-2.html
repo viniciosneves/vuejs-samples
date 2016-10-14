@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+</head>
+<body>
+
+    <div id="app" class="container">
+
+        <div v-for="plan in plans">
+
+            <plan :plan="plan" :active="active" @activate="handleActivation"></plan>
+
+        </div>
+
+    </div>
+
+    <template id="plan-template">
+        <div>
+            <span style="width:120px; display: inline-block; margin: 10px 0;">{{ plan.name }}</span>
+            <span style="width:120px; display: inline-block; margin: 10px 0;">{{ plan.price }} / month</span>
+
+            <button v-if="!isActive" @click="setActivePlan" class="btn btn-deafult">{{ isUpgrade ? 'Upgrade' : 'Downgrade' }}</button>
+            
+            <span v-else>Selected</span>
+            
+        </div>
+    </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
+    <script>
+        var bus = new Vue();
+
+        Vue.component('plan', {
+            template: '#plan-template',
+            props: ['plan', 'active'],
+
+            computed: {
+                isActive: function() {
+                    return this.plan.price === this.active.price;
+                },
+
+                isUpgrade: function() {
+                    return this.plan.price > this.active.price;
+                }
+            },
+
+            methods: {
+                setActivePlan: function() {
+                    bus.$emit('activate', this.plan);
+                }
+            }
+        });
+
+
+
+        new Vue({
+            el: '#app',
+            data: {
+                plans: [
+                    { name: 'Enterprise', price: 100},
+                    { name: 'Pro', price: 50},
+                    { name: 'Personal', price: 10},
+                    { name: 'Free', price: 0}
+                ],
+                active: { name: 'Free', price: 0}
+            },
+
+            methods: {
+                handleActivation: function(plan) {
+                    this.active = plan;
+                    console.log(plan);
+                }
+            },
+
+            created: function() {
+                bus.$on('activate', this.handleActivation);
+            },
+
+            destroyed: function() {
+                bus.$off('activate', this.handleActivation);
+            }
+        });
+    </script>
+</body>
+</html>
